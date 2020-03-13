@@ -3,7 +3,7 @@ package convert
 
 import (
 	"bytes"
-	"github.com/qeesung/image2ascii/ascii"
+	"image2ascii/ascii"
 	"image"
 	"image/color"
 	// Support decode jpeg image
