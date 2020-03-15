@@ -79,8 +79,12 @@ func (converter PixelASCIIConverter) ConvertPixelToPixelASCII(pixel color.Color,
 	value := converter.intensity(r, g, b, a)
 
 	// Choose the char
-	precision := float64(255 * 3 / (len(convertOptions.Pixels) - 1))
-	rawChar := convertOptions.Pixels[converter.roundValue(float64(value)/precision)]
+	precision := float64(255*3 / (len(convertOptions.Pixels)-1))
+	pos:=converter.roundValue(float64(value)/precision)
+	if pos==len(convertOptions.Pixels){
+		pos=pos-1
+	}
+	rawChar := convertOptions.Pixels[pos]
 	return CharPixel{
 		Char: rawChar,
 		R:    uint8(r),
@@ -116,7 +120,7 @@ func (converter PixelASCIIConverter) reverse(numbers []byte) []byte {
 }
 
 func (converter PixelASCIIConverter) intensity(r, g, b, a uint64) uint64 {
-	return uint64((0.2126 * float64(r) + 0.7152 * float64(g) + 0.0722 * float64(b)) * float64(a) / 255)
+	return uint64((0.2126 * float64(r) + 0.7152 * float64(g) + 0.0722 * float64(b))* 3 * float64(a) / 255)
 }
 
 // decorateWithColor decorate the raw char with the color base on r,g,b value

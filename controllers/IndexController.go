@@ -1,32 +1,133 @@
 package controllers
 
 import (
+	"github.com/MinoIC/I2AW/Database"
 	"github.com/astaxie/beego"
+	"github.com/jinzhu/gorm"
+	"html/template"
 	image2 "image"
 	_ "image/jpeg"
 	_ "image/png"
 	"image2ascii/convert"
-	"net/http"
+	"io"
+	"math/rand"
+	"os"
+	"time"
 )
 
 type IndexController struct {
 	beego.Controller
 }
 
-func (this *IndexController) Get() {
+func (this *IndexController) Prepare() {
+	this.TplName = "index.html"
+	this.Data["xsrfData"] = template.HTML(this.XSRFFormHTML())
+}
+
+func (this *IndexController) Get() {}
+
+func (this *IndexController) Post() {
+	if !this.CheckXSRFCookie() {
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("xsrf 检测失败"))
+		return
+	}
+	file, fileHeader, err := this.GetFile("img")
+	if err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片上传失败"))
+		return
+	}
+	beego.Info(file)
+	key := RandKey(10)
+	imgCache, err := os.Create("./imgcache/" + key + "_" + fileHeader.Filename)
+	if err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("服务器缓存图片失败"))
+		return
+	}
+	_, err = io.Copy(imgCache, file)
+	if err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("服务器缓存图片失败"))
+		return
+	}
+	imgSrc, err := os.Open("./imgcache/" + key + "_" + fileHeader.Filename)
+	if err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("服务器读取缓存失败"))
+		return
+	}
+	img, fileName, err := image2.Decode(imgSrc)
+	if err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片解析失败"))
+		return
+	}
+	imgSrc, err = os.Open("./imgcache/" + key + "_" + fileHeader.Filename)
+	if err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("服务器读取缓存失败"))
+		return
+	}
+	imgConf, _, err := image2.DecodeConfig(imgSrc)
+	if err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片尺寸解析失败"))
+		return
+	}
 	options := convert.Options{
 		Ratio:           0,
-		FixedWidth:      160,
-		FixedHeight:     60,
+		FixedWidth:      imgConf.Width * 240 / (imgConf.Height + imgConf.Width),
+		FixedHeight:     imgConf.Height * 120 / (imgConf.Height + imgConf.Width),
 		FitScreen:       false,
 		StretchedScreen: false,
 		Colored:         false,
 		Reversed:        false,
 	}
+	beego.Info("new post: ", fileName, "size: ", imgConf.Width, "x", imgConf.Height, " -> ", options.FixedWidth, "x", options.FixedHeight)
+	DB := Database.GetDatabase()
 	converter := convert.NewImageConverter()
-	imageLink := `https://img.ntmc.tech/images/2020/03/13/mfddpItIKoiH3F0q.jpg`
-	imageSrc, _ := http.Get(imageLink)
-	image, _, _ := image2.Decode(imageSrc.Body)
-	ret := converter.Image2ASCIIString(image, &options)
-	_, _ = this.Ctx.ResponseWriter.Write([]byte(ret))
+	item := Database.Item{
+		Model:      gorm.Model{},
+		FileName:   key + "_" + fileHeader.Filename,
+		Identifier: key,
+		Value:      converter.Image2ASCIIString(img, &options),
+	}
+	if err := DB.Create(&item).Error; err != nil {
+		beego.Error(err)
+		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片处理失败"))
+		return
+	}
+	this.Redirect("/value/"+item.Identifier, 302)
+}
+
+func (this *IndexController) CheckXSRFCookie() bool {
+	if !this.EnableXSRF {
+		return true
+	}
+	token := this.Ctx.Input.Query("_xsrf")
+	if token == "" {
+		token = this.Ctx.Request.Header.Get("X-Xsrftoken")
+	}
+	if token == "" {
+		token = this.Ctx.Request.Header.Get("X-Csrftoken")
+	}
+	if token == "" {
+		return false
+	}
+	if this.XSRFToken() != token {
+		return false
+	}
+	return true
+}
+
+func RandKey(keyLength int) string {
+	str := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	b := []byte(str)
+	var ret []byte
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 1; i <= keyLength; i++ {
+		ret = append(ret, b[r.Intn(len(str))])
+	}
+	return string(ret)
 }
