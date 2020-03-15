@@ -1,7 +1,8 @@
 # Created by .ignore support plugin (hsz.mobi)
-.idea/.gitignore
 .idea/I2AW.iml
 .idea/misc.xml
 .idea/modules.xml
 .idea/vcs.xml
-./imgcache/
+.idea/jsLibraryMappings.xml
+.idea/.gitignore
+/imgcache/
