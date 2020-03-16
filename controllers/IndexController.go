@@ -57,34 +57,22 @@ func (this *IndexController) Post() {
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("服务器读取缓存失败"))
 		return
 	}
-	img, fileName, err := image2.Decode(imgSrc)
+	img, _, err := image2.Decode(imgSrc)
 	if err != nil {
 		beego.Error(err)
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片解析失败"))
 		return
 	}
-	imgSrc, err = os.Open("./imgcache/" + key + "_" + fileHeader.Filename)
-	if err != nil {
-		beego.Error(err)
-		_, _ = this.Ctx.ResponseWriter.Write([]byte("服务器读取缓存失败"))
-		return
-	}
-	imgConf, _, err := image2.DecodeConfig(imgSrc)
-	if err != nil {
-		beego.Error(err)
-		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片尺寸解析失败"))
-		return
-	}
 	options := convert.Options{
 		Ratio:           0,
-		FixedWidth:      imgConf.Width * 240 / (imgConf.Height + imgConf.Width),
-		FixedHeight:     imgConf.Height * 120 / (imgConf.Height + imgConf.Width),
+		FixedWidth:      img.Bounds().Max.X * 240 / (img.Bounds().Max.Y + img.Bounds().Max.X),
+		FixedHeight:     img.Bounds().Max.Y * 120 / (img.Bounds().Max.Y + img.Bounds().Max.X),
 		FitScreen:       false,
 		StretchedScreen: false,
 		Colored:         false,
 		Reversed:        false,
 	}
-	beego.Info("new post: ", fileName, "size: ", imgConf.Width, "x", imgConf.Height, " -> ", options.FixedWidth, "x", options.FixedHeight)
+	beego.Info("new post: ", fileHeader.Filename, "size: ", img.Bounds().Max.X, "x", img.Bounds().Max.Y, " -> ", options.FixedWidth, "x", options.FixedHeight)
 	DB := Database.GetDatabase()
 	converter := convert.NewImageConverter()
 	item := Database.Item{
