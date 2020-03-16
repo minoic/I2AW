@@ -12,6 +12,7 @@ import (
 	"io"
 	"math/rand"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -72,21 +73,47 @@ func (this *IndexController) Post() {
 		Colored:         false,
 		Reversed:        false,
 	}
-	beego.Info("new post: ", fileHeader.Filename, "size: ", img.Bounds().Max.X, "x", img.Bounds().Max.Y, " -> ", options.FixedWidth, "x", options.FixedHeight)
+	beego.Info("new post: ", fileHeader.Filename, "size: ", img.Bounds().Max.X, "x", img.Bounds().Max.Y, " -> ",
+		options.FixedWidth, "x", options.FixedHeight)
 	DB := Database.GetDatabase()
 	converter := convert.NewImageConverter()
-	item := Database.Item{
+	/*	item := Database.Item{
 		Model:      gorm.Model{},
 		FileName:   key + "_" + fileHeader.Filename,
 		Identifier: key,
 		Value:      converter.Image2ASCIIString(img, &options),
+	}*/
+	matrix := converter.Image2CharPixelMatrix(img, &options)
+	//beego.Debug(matrix)
+	var value string
+	for x := range matrix {
+		//beego.Debug(len(matrix[x]))
+		for y := range matrix[x] {
+			/*beego.Debug(x,y,matrix[x][y])*/
+
+			if matrix[x][y].Char == ' ' {
+				value = value + `<font style="color:rgb(` + strconv.Itoa(int(matrix[x][y].R)) + "," +
+					"" + strconv.Itoa(int(matrix[x][y].G)) + "," + strconv.Itoa(int(matrix[x][y].B)) + `)">` + "&ensp;" + `</font>`
+			} else {
+				value = value + `<font style="color:rgb(` + strconv.Itoa(int(matrix[x][y].R)) + "," +
+					"" + strconv.Itoa(int(matrix[x][y].G)) + "," + strconv.Itoa(int(matrix[x][y].B)) + `)">` + string(matrix[x][y].Char) + `</font>`
+			}
+		}
+		value = value + `<br>`
 	}
+	item := Database.RgbItem{
+		Model:      gorm.Model{},
+		FileName:   key + "_" + fileHeader.Filename,
+		Identifier: key,
+		Value:      template.HTML(value),
+	}
+	beego.Debug(value)
 	if err := DB.Create(&item).Error; err != nil {
 		beego.Error(err)
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片处理失败"))
 		return
 	}
-	this.Redirect("/value/"+item.Identifier, 302)
+	this.Redirect("/rgbvalue/"+item.Identifier, 302)
 }
 
 func (this *IndexController) CheckXSRFCookie() bool {
