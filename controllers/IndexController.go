@@ -1,9 +1,11 @@
 package controllers
 
 import (
+	"bytes"
 	"github.com/MinoIC/I2AW/Database"
 	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
+	"google.golang.org/appengine/runtime"
 	"html/template"
 	image2 "image"
 	_ "image/jpeg"
@@ -12,6 +14,7 @@ import (
 	"io"
 	"math/rand"
 	"os"
+	runtime2 "runtime"
 	"strconv"
 	"time"
 )
@@ -85,35 +88,62 @@ func (this *IndexController) Post() {
 	}*/
 	matrix := converter.Image2CharPixelMatrix(img, &options)
 	//beego.Debug(matrix)
-	var value string
+	/*	var value string*/
+	var buf bytes.Buffer
 	for x := range matrix {
 		//beego.Debug(len(matrix[x]))
-		for y := range matrix[x] {
+		for y := 0; y < len(matrix[x]); y = y + 1 {
 			/*beego.Debug(x,y,matrix[x][y])*/
-
 			if matrix[x][y].Char == ' ' {
-				value = value + `<font style="color:rgb(` + strconv.Itoa(int(matrix[x][y].R)) + "," +
-					"" + strconv.Itoa(int(matrix[x][y].G)) + "," + strconv.Itoa(int(matrix[x][y].B)) + `)">` + "&ensp;" + `</font>`
+				buf.WriteString(`<font style="color:rgb(`)
+				buf.WriteString(strconv.Itoa(int(matrix[x][y].R)))
+				buf.WriteString(",")
+				buf.WriteString(strconv.Itoa(int(matrix[x][y].G)))
+				buf.WriteString(",")
+				buf.WriteString(strconv.Itoa(int(matrix[x][y].B)))
+				buf.WriteString(`)">`)
+				buf.WriteString(`&ensp;`)
+				for ; y < len(matrix[x])-1 && matrix[x][y+1].Char == ' '; y = y + 1 {
+					buf.WriteString(`&ensp;`)
+				}
+				buf.WriteString(`</font>`)
+				/*				value = value + `<font style="color:rgb(` + strconv.Itoa(int(matrix[x][y].R)) + "," +
+								"" + strconv.Itoa(int(matrix[x][y].G)) + "," + strconv.Itoa(int(matrix[x][y].B)) + `)">` + "&ensp;" + `</font>`*/
 			} else {
-				value = value + `<font style="color:rgb(` + strconv.Itoa(int(matrix[x][y].R)) + "," +
-					"" + strconv.Itoa(int(matrix[x][y].G)) + "," + strconv.Itoa(int(matrix[x][y].B)) + `)">` + string(matrix[x][y].Char) + `</font>`
+				buf.WriteString(`<font style="color:rgb(`)
+				buf.WriteString(strconv.Itoa(int(matrix[x][y].R)))
+				buf.WriteString(",")
+				buf.WriteString(strconv.Itoa(int(matrix[x][y].G)))
+				buf.WriteString(",")
+				buf.WriteString(strconv.Itoa(int(matrix[x][y].B)))
+				buf.WriteString(`)">`)
+				buf.WriteByte(matrix[x][y].Char)
+				for ; y < len(matrix[x])-1 && matrix[x][y+1].Char == matrix[x][y].Char; y = y + 1 {
+					buf.WriteByte(matrix[x][y].Char)
+				}
+				buf.WriteString(`</font>`)
+				/*				value = value + `<font style="color:rgb(` + strconv.Itoa(int(matrix[x][y].R)) + "," +
+								"" + strconv.Itoa(int(matrix[x][y].G)) + "," + strconv.Itoa(int(matrix[x][y].B)) + `)">` + string(matrix[x][y].Char) + `</font>`*/
 			}
 		}
-		value = value + `<br>`
+		buf.WriteString(`<br>`)
 	}
 	item := Database.RgbItem{
 		Model:      gorm.Model{},
 		FileName:   key + "_" + fileHeader.Filename,
 		Identifier: key,
-		Value:      template.HTML(value),
+		Value:      template.HTML(buf.String()),
 	}
-	beego.Debug(value)
+	beego.Debug(buf.String())
 	if err := DB.Create(&item).Error; err != nil {
 		beego.Error(err)
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片处理失败"))
 		return
 	}
 	this.Redirect("/rgbvalue/"+item.Identifier, 302)
+
+	runtime.Stats()
+
 }
 
 func (this *IndexController) CheckXSRFCookie() bool {
