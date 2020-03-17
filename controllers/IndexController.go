@@ -5,7 +5,6 @@ import (
 	"github.com/MinoIC/I2AW/Database"
 	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
-	"google.golang.org/appengine/runtime"
 	"html/template"
 	image2 "image"
 	_ "image/jpeg"
@@ -14,13 +13,17 @@ import (
 	"io"
 	"math/rand"
 	"os"
-	runtime2 "runtime"
+	"runtime"
 	"strconv"
 	"time"
 )
 
 type IndexController struct {
 	beego.Controller
+}
+
+func init() {
+	_ = os.Mkdir("./imgcache", os.ModePerm)
 }
 
 func (this *IndexController) Prepare() {
@@ -41,9 +44,9 @@ func (this *IndexController) Post() {
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片上传失败"))
 		return
 	}
-	beego.Info(file)
 	key := RandKey(10)
 	imgCache, err := os.Create("./imgcache/" + key + "_" + fileHeader.Filename)
+	defer imgCache.Close()
 	if err != nil {
 		beego.Error(err)
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("服务器缓存图片失败"))
@@ -134,16 +137,14 @@ func (this *IndexController) Post() {
 		Identifier: key,
 		Value:      template.HTML(buf.String()),
 	}
-	beego.Debug(buf.String())
+	//beego.Debug(buf.String())
 	if err := DB.Create(&item).Error; err != nil {
 		beego.Error(err)
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("图片处理失败"))
 		return
 	}
 	this.Redirect("/rgbvalue/"+item.Identifier, 302)
-
-	runtime.Stats()
-
+	runtime.GC()
 }
 
 func (this *IndexController) CheckXSRFCookie() bool {
