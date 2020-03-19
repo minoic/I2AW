@@ -8,22 +8,19 @@ import (
 func init() {
 	DB := GetDatabase()
 	DB.AutoMigrate(
-		&Item{},
 		&RgbItem{},
 	)
 	return
 }
 
-type Item struct {
-	gorm.Model
-	FileName   string
-	Identifier string
-	Value      string
-}
-
 type RgbItem struct {
 	gorm.Model
-	FileName   string
-	Identifier string
-	Value      template.HTML
+	FileName   string        `json:"file_name"`
+	Identifier string        `json:"identifier"`
+	SessionID  string        `json:"-"`
+	SrcHeight  int           `json:"src_height"`
+	SrcWidth   int           `json:"src_width"`
+	DstHeight  int           `json:"dst_height"`
+	DstWidth   int           `json:"dst_width"`
+	Value      template.HTML `json:"-"`
 }

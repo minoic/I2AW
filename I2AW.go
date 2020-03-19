@@ -7,7 +7,6 @@ import (
 
 func main() {
 	beego.Router("/", &controllers.IndexController{})
-	beego.Router("/value/:identifier", &controllers.ValueController{})
 	beego.Router("/rgbvalue/:identifier", &controllers.RgbValueController{})
 	beego.Run()
 }
