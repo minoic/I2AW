@@ -1,0 +1,60 @@
+# github.com/astaxie/beego v1.12.1
+github.com/astaxie/beego
+github.com/astaxie/beego/config
+github.com/astaxie/beego/context
+github.com/astaxie/beego/context/param
+github.com/astaxie/beego/grace
+github.com/astaxie/beego/logs
+github.com/astaxie/beego/session
+github.com/astaxie/beego/toolbox
+github.com/astaxie/beego/utils
+# github.com/aybabtme/rgbterm v0.0.0-20170906152045-cc83f3b3ce59
+github.com/aybabtme/rgbterm
+# github.com/davecgh/go-spew v1.1.0
+github.com/davecgh/go-spew/spew
+# github.com/go-sql-driver/mysql v1.4.1
+github.com/go-sql-driver/mysql
+# github.com/jinzhu/gorm v1.9.12
+github.com/jinzhu/gorm
+github.com/jinzhu/gorm/dialects/mysql
+github.com/jinzhu/gorm/dialects/sqlite
+# github.com/jinzhu/inflection v1.0.0
+github.com/jinzhu/inflection
+# github.com/mattn/go-isatty v0.0.12
+github.com/mattn/go-isatty
+# github.com/mattn/go-sqlite3 v2.0.1+incompatible
+github.com/mattn/go-sqlite3
+# github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646
+github.com/nfnt/resize
+# github.com/pmezard/go-difflib v1.0.0
+github.com/pmezard/go-difflib/difflib
+# github.com/qeesung/image2ascii v1.0.1
+github.com/qeesung/image2ascii/ascii
+github.com/qeesung/image2ascii/convert
+github.com/qeesung/image2ascii/terminal
+github.com/qeesung/image2ascii/terminal/mocks
+# github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644
+github.com/shiena/ansicolor
+# github.com/stretchr/objx v0.1.0
+github.com/stretchr/objx
+# github.com/stretchr/testify v1.5.1
+github.com/stretchr/testify/assert
+github.com/stretchr/testify/mock
+# github.com/wayneashleyberry/terminal-dimensions v1.0.0
+github.com/wayneashleyberry/terminal-dimensions
+# golang.org/x/crypto v0.0.0-20191205180655-e7c4368fe9dd
+golang.org/x/crypto/acme
+golang.org/x/crypto/acme/autocert
+# golang.org/x/net v0.0.0-20190620200207-3b0461eec859
+golang.org/x/net/idna
+# golang.org/x/sys v0.0.0-20200116001909-b77594299b42
+golang.org/x/sys/unix
+# golang.org/x/text v0.3.0
+golang.org/x/text/secure/bidirule
+golang.org/x/text/transform
+golang.org/x/text/unicode/bidi
+golang.org/x/text/unicode/norm
+# google.golang.org/appengine v1.4.0
+google.golang.org/appengine/cloudsql
+# gopkg.in/yaml.v2 v2.2.2
+gopkg.in/yaml.v2
