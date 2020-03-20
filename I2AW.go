@@ -3,6 +3,8 @@ package main
 import (
 	"github.com/MinoIC/I2AW/controllers"
 	"github.com/astaxie/beego"
+	_ "github.com/astaxie/beego/session/memcache"
+	_ "github.com/astaxie/beego/session/redis"
 )
 
 func main() {

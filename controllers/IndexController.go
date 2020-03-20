@@ -22,6 +22,10 @@ type IndexController struct {
 	beego.Controller
 }
 
+func init() {
+	_ = os.Mkdir("./imgcache", os.ModePerm)
+}
+
 func (this *IndexController) Get() {
 	this.TplName = "index.html"
 	this.Data["xsrfData"] = template.HTML(this.XSRFFormHTML())
@@ -34,11 +38,16 @@ func (this *IndexController) Get() {
 		this.ServeJSON()
 	} else if method == "size" {
 		if size := this.StartSession().Get("size"); size == nil {
+			_ = this.StartSession().Set("size", 80)
+			Database.AddSessionAmount()
 			_, _ = this.Ctx.ResponseWriter.Write([]byte("80"))
 		} else {
 			_, _ = this.Ctx.ResponseWriter.Write([]byte(strconv.Itoa(size.(int))))
 		}
 		return
+	} else if method == "stats" {
+		this.Data["json"] = Database.GetStats()
+		this.ServeJSON()
 	}
 }
 
@@ -178,6 +187,7 @@ func (this *IndexController) Post() {
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("数据库处理失败"))
 		return
 	}
+	Database.AddItemAmount()
 	_, _ = this.Ctx.ResponseWriter.Write([]byte("处理成功！"))
 	defer runtime.GC()
 }

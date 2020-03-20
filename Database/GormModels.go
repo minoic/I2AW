@@ -9,7 +9,13 @@ func init() {
 	DB := GetDatabase()
 	DB.AutoMigrate(
 		&RgbItem{},
+		&Status{},
 	)
+	DB.FirstOrCreate(&Status{
+		Model:    gorm.Model{},
+		Sessions: 0,
+		Items:    0,
+	}, "id = ?", 1)
 	return
 }
 
@@ -23,4 +29,10 @@ type RgbItem struct {
 	DstHeight  int           `json:"dst_height"`
 	DstWidth   int           `json:"dst_width"`
 	Value      template.HTML `json:"-"`
+}
+
+type Status struct {
+	gorm.Model `json:"-"`
+	Sessions   uint `json:"sessions"`
+	Items      uint `json:"items"`
 }

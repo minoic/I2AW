@@ -6,14 +6,21 @@ github.com/astaxie/beego/context/param
 github.com/astaxie/beego/grace
 github.com/astaxie/beego/logs
 github.com/astaxie/beego/session
+github.com/astaxie/beego/session/memcache
+github.com/astaxie/beego/session/redis
 github.com/astaxie/beego/toolbox
 github.com/astaxie/beego/utils
 # github.com/aybabtme/rgbterm v0.0.0-20170906152045-cc83f3b3ce59
 github.com/aybabtme/rgbterm
+# github.com/bradfitz/gomemcache v0.0.0-20180710155616-bc664df96737
+github.com/bradfitz/gomemcache/memcache
 # github.com/davecgh/go-spew v1.1.0
 github.com/davecgh/go-spew/spew
 # github.com/go-sql-driver/mysql v1.4.1
 github.com/go-sql-driver/mysql
+# github.com/gomodule/redigo v2.0.0+incompatible
+github.com/gomodule/redigo/internal
+github.com/gomodule/redigo/redis
 # github.com/jinzhu/gorm v1.9.12
 github.com/jinzhu/gorm
 github.com/jinzhu/gorm/dialects/mysql

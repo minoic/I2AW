@@ -157,8 +157,6 @@ func NewManager(provideName string, cf *ManagerConfig) (*Manager, error) {
 		cf.SessionIDLength = 16
 	}
 
-	cf.CookieLifeTime = int(cf.Maxlifetime)
-	cf.SessionNameInHTTPHeader = cf.CookieName
 	return &Manager{
 		provider,
 		cf,
