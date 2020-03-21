@@ -7,5 +7,11 @@
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:D:\GoWorks\src\github.com\MinoIC\I2AW\sqlite3.db</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="testdb@192.168.0.106" uuid="a67bf5fa-d72e-407a-a712-3dc164fe1648">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://192.168.0.106:3306/testdb</jdbc-url>
+    </data-source>
   </component>
 </project>
