@@ -28,7 +28,7 @@ type RgbItem struct {
 	SrcWidth   int           `json:"src_width"`
 	DstHeight  int           `json:"dst_height"`
 	DstWidth   int           `json:"dst_width"`
-	Value      template.HTML `json:"-"`
+	Value      template.HTML `json:"-" gorm:"type:longtext;"`
 }
 
 type Status struct {
