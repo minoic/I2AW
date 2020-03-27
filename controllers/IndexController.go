@@ -38,9 +38,9 @@ func (this *IndexController) Get() {
 		this.ServeJSON()
 	} else if method == "size" {
 		if size := this.StartSession().Get("size"); size == nil {
-			_ = this.StartSession().Set("size", 80)
+			_ = this.StartSession().Set("size", 120)
 			Database.AddSessionAmount()
-			_, _ = this.Ctx.ResponseWriter.Write([]byte("80"))
+			_, _ = this.Ctx.ResponseWriter.Write([]byte("120"))
 		} else {
 			_, _ = this.Ctx.ResponseWriter.Write([]byte(strconv.Itoa(size.(int))))
 		}
