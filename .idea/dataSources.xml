@@ -13,5 +13,11 @@
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
       <jdbc-url>jdbc:mysql://192.168.0.106:3306/testdb</jdbc-url>
     </data-source>
+    <data-source source="LOCAL" name="OWNWEB" uuid="fe00fdf9-2e20-40e9-9684-9d23bbb60cd4">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://10.0.0.14:3306</jdbc-url>
+    </data-source>
   </component>
 </project>

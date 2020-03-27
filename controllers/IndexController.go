@@ -159,7 +159,7 @@ func (this *IndexController) Post() {
 				buf.WriteString(strconv.Itoa(int(matrix[x][y].B)))
 				buf.WriteString(`)">`)
 				buf.WriteByte(matrix[x][y].Char)
-				for ; y < len(matrix[x])-1 && matrix[x][y+1].Char == matrix[x][y].Char; y = y + 1 {
+				for ; y < len(matrix[x])-1 && matrix[x][y+1] == matrix[x][y]; y = y + 1 {
 					buf.WriteByte(matrix[x][y].Char)
 				}
 				buf.WriteString(`</font>`)
