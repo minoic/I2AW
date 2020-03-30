@@ -17,7 +17,7 @@ demo: http://i2aw.ntmc.tech/
 
 ![原图2](doc/220px-Chen_Duxiu4.jpg)
 
-![转换后2](doc/Annotation%202020-03-28%20000805.png)
+![转换后2](doc/Annotation%202020-03-28%20000806.png)
 
 ![原图3](doc/63195937_p0_master1200.jpg)
 
