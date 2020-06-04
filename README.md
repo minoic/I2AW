@@ -7,7 +7,7 @@
 - 网站使用量统计
 - dropzone 拖动上传和自动加载结果
 
-demo: http://i2aw.ntmc.tech/
+demo: https://i2aw.ntmc.tech/
 
 **效果演示：**
 
