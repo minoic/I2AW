@@ -21,7 +21,7 @@ var nvd3Charts = function () {
                 .showYAxis(true)//Show the y-axis
                 .showXAxis(true)//Show the x-axis
                 .color(d3.scale.myColors().range());
-            ;
+
 
             chart.xAxis//Chart x-axis settings
                 .axisLabel('Time (ms)').tickFormat(d3.format(',r'));
@@ -86,9 +86,9 @@ var nvd3Charts = function () {
         nv.addGraph(function () {
             var chart = nv.models.scatterChart().showDistX(true)//showDist, when true, will display those little distribution lines on the axis.
                 .showDistY(true).transitionDuration(350).color(d3.scale.myColors().range());
-            ;
 
-            //Configure how the tooltip looks.
+
+            //configure how the tooltip looks.
             chart.tooltipContent(function (key) {
                 return '<h3>' + key + '</h3>';
             });
@@ -125,9 +125,9 @@ var nvd3Charts = function () {
                     data[i].values.push({
                         x: random(),
                         y: random(),
-                        size: Math.random()//Configure the size of each scatter point
+                        size: Math.random()//configure the size of each scatter point
                         ,
-                        shape: (Math.random() > 0.95) ? shapes[j % 6] : "circle" //Configure the shape of each scatter point.
+                        shape: (Math.random() > 0.95) ? shapes[j % 6] : "circle" //configure the shape of each scatter point.
                     });
                 }
             }
@@ -151,7 +151,7 @@ var nvd3Charts = function () {
                 }).y(function (d) {
                     return d[1];
                 }).forceY([0, 8000]).useInteractiveGuideline(true).color(d3.scale.myColors().range());
-                ;
+
                 var options = {
                     showControls: false,
                     showLegend: true
@@ -182,7 +182,7 @@ var nvd3Charts = function () {
                 .showValues(true)//...instead, show the bar value right on top of each bar.
                 .transitionDuration(350)
                 .color(d3.scale.myColors().range());
-            ;
+
 
             d3.select('#chart-4 svg').datum(exampleData()).call(chart);
 
@@ -270,7 +270,7 @@ var nvd3Charts = function () {
                     }).y(function (d, i) {
                         return d[1];
                     }).color(d3.scale.myColors().range());
-                ;
+
 
                 chart.xAxis.tickFormat(function (d) {
                     var dx = data[0].values[d] && data[0].values[d][0] || 0;
@@ -324,7 +324,7 @@ var nvd3Charts = function () {
     var startChart8 = function () {
         nv.addGraph(function () {
             var chart = nv.models.lineWithFocusChart().color(d3.scale.myColors().range());
-            ;
+
 
             chart.xAxis.tickFormat(d3.format(',f'));
 
@@ -361,7 +361,7 @@ var nvd3Charts = function () {
             }).y(function (d) {
                 return d.value;
             }).showLabels(true).color(d3.scale.myColors().range());
-            ;
+
 
             d3.select("#chart-9 svg").datum(exampleData()).transition().duration(350).call(chart);
 
@@ -375,12 +375,12 @@ var nvd3Charts = function () {
             }).y(function (d) {
                 return d.value;
             }).showLabels(true)//Display pie labels
-                .labelThreshold(.05)//Configure the minimum slice size for labels to show up
-                .labelType("percent")//Configure what type of data to show in the label. Can be "key", "value" or "percent"
+                .labelThreshold(.05)//configure the minimum slice size for labels to show up
+                .labelType("percent")//configure what type of data to show in the label. Can be "key", "value" or "percent"
                 .donut(true)//Turn on Donut mode. Makes pie chart look tasty!
-                .donutRatio(0.35)//Configure how big you want the donut hole size to be.
+                .donutRatio(0.35)//configure how big you want the donut hole size to be.
                 .color(d3.scale.myColors().range());
-            ;
+
 
             d3.select("#chart-10 svg").datum(exampleData()).transition().duration(350).call(chart);
 

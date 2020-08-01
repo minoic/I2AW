@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/MinoIC/I2AW/Database"
+	"github.com/MinoIC/I2AW/database"
 	"github.com/astaxie/beego"
 )
 
@@ -12,8 +12,8 @@ type RgbValueController struct {
 func (this *RgbValueController) Get() {
 	this.TplName = "rgbvalue.html"
 	identifier := this.Ctx.Input.Param(":identifier")
-	DB := Database.GetDatabase()
-	var item Database.RgbItem
+	DB := database.GetDatabase()
+	var item database.RgbItem
 	DB.First(&item, "identifier = ?", identifier)
 	this.Data["value"] = item.Value
 }

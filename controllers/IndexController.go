@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"bytes"
-	"github.com/MinoIC/I2AW/Database"
+	"github.com/MinoIC/I2AW/database"
 	"github.com/MinoIC/I2AW/image2ascii/convert"
 	"github.com/astaxie/beego"
 	"github.com/jinzhu/gorm"
@@ -31,22 +31,22 @@ func (this *IndexController) Get() {
 	this.Data["xsrfData"] = template.HTML(this.XSRFFormHTML())
 	method := this.GetString("method")
 	if method == "ls" {
-		DB := Database.GetDatabase()
-		var items []Database.RgbItem
+		DB := database.GetDatabase()
+		var items []database.RgbItem
 		DB.Find(&items, "session_id = ?", this.StartSession().SessionID())
 		this.Data["json"] = items
 		this.ServeJSON()
 	} else if method == "size" {
 		if size := this.StartSession().Get("size"); size == nil {
 			_ = this.StartSession().Set("size", 120)
-			Database.AddSessionAmount()
+			database.AddSessionAmount()
 			_, _ = this.Ctx.ResponseWriter.Write([]byte("120"))
 		} else {
 			_, _ = this.Ctx.ResponseWriter.Write([]byte(strconv.Itoa(size.(int))))
 		}
 		return
 	} else if method == "stats" {
-		this.Data["json"] = Database.GetStats()
+		this.Data["json"] = database.GetStats()
 		this.ServeJSON()
 	}
 }
@@ -119,9 +119,9 @@ func (this *IndexController) Post() {
 	}
 	beego.Info("new post: ", fileHeader.Filename, "size: ", img.Bounds().Max.X, "x", img.Bounds().Max.Y, " -> ",
 		options.FixedWidth, "x", options.FixedHeight)
-	DB := Database.GetDatabase()
+	DB := database.GetDatabase()
 	converter := convert.NewImageConverter()
-	/*	item := Database.Item{
+	/*	item := database.Item{
 		Model:      gorm.Model{},
 		FileName:   key + "_" + fileHeader.Filename,
 		Identifier: key,
@@ -169,7 +169,7 @@ func (this *IndexController) Post() {
 		}
 		buf.WriteString(`<br>`)
 	}
-	item := Database.RgbItem{
+	item := database.RgbItem{
 		Model:      gorm.Model{},
 		FileName:   key + "_" + fileHeader.Filename,
 		Identifier: key,
@@ -187,7 +187,7 @@ func (this *IndexController) Post() {
 		_, _ = this.Ctx.ResponseWriter.Write([]byte("数据库处理失败"))
 		return
 	}
-	Database.AddItemAmount()
+	database.AddItemAmount()
 	_, _ = this.Ctx.ResponseWriter.Write([]byte("处理成功！"))
 	defer runtime.GC()
 }
